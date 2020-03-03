@@ -353,10 +353,9 @@ class SimpleExtractor(BasicFeatureExtractor):
 
 
 class SimplePerceptualLoss(nn.Module):
-    def __init__(self, weight = 1e-2, feat  : int = 2):
+    def __init__(self, feat  : int = 2):
         super(SimplePerceptualLoss, self).__init__()
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        self.weight = weight
         self.cudas = list(range(torch.cuda.device_count()))
         self.features = SimpleExtractor(feat)
         self.features.eval()
@@ -366,7 +365,7 @@ class SimplePerceptualLoss(nn.Module):
     def forward(self, actual, desire):
         actuals = torch.nn.parallel.data_parallel(module=self.features, inputs=actual, device_ids=self.cudas)
         desires = torch.nn.parallel.data_parallel(module=self.features, inputs=desire, device_ids=self.cudas)
-        loss = self.weight*self.criterion(actuals, desires)
+        loss = self.criterion(actuals, desires)
         self.loss = loss
         return self.loss
 
