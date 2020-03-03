@@ -10,21 +10,21 @@ class RSGUNetGenerator(torch.nn.Module):
         super(RSGUNetGenerator, self).__init__()
         self.activation = activation
         self.enc1 = BaseBlock(DIMENSION, 16, 3, 2, activation=activation)
-        self.enc2 = nn.Sequential(BaseBlock(16,   16, 3, 1, activation=activation),
-                                  BaseBlock(16,   16, 3, 1, activation=activation), ConvLayer(16, 32, 3, 2))
-        self.enc3 = nn.Sequential(BaseBlock(32,   32, 3, 1, activation=activation),
-                                  BaseBlock(32,   32, 3, 1, activation=activation), ConvLayer(32, 64, 3, 2))
-        self.enc4 = nn.Sequential(BaseBlock(64,   64, 3, 1, activation=activation),
-                                  BaseBlock(64,   64, 3, 1, activation=activation), ConvLayer(64, 128, 3, 2))
-        self.enc5 = nn.Sequential(BaseBlock(128, 128, 3, 1, activation=activation),
-                                  BaseBlock(128, 128, 3, 1, activation=activation), ConvLayer(128, 128, 3, 2))
+        self.enc2 = nn.Sequential(BaseNormalBlock(16,   16, 3, 1, activation=activation),
+                                  BaseNormalBlock(16,   16, 3, 1, activation=activation), ConvLayer(16, 32, 3, 2))
+        self.enc3 = nn.Sequential(BaseNormalBlock(32,   32, 3, 1, activation=activation),
+                                  BaseNormalBlock(32,   32, 3, 1, activation=activation), ConvLayer(32, 64, 3, 2))
+        self.enc4 = nn.Sequential(BaseNormalBlock(64,   64, 3, 1, activation=activation),
+                                  BaseNormalBlock(64,   64, 3, 1, activation=activation), ConvLayer(64, 128, 3, 2))
+        self.enc5 = nn.Sequential(BaseNormalBlock(128, 128, 3, 1, activation=activation),
+                                  BaseNormalBlock(128, 128, 3, 1, activation=activation), ConvLayer(128, 128, 3, 2))
 
         self.center = nn.Sequential(nn.AdaptiveAvgPool2d((1,1)), BaseBlock(128,128, 1, 1, activation=activation))
 
-        self.dec6   = nn.Sequential(BaseBlock(256,128, 3, 1, activation=activation), BaseBlock(128,128, 3, 1, activation=activation), deconv(128, 64))
-        self.dec7   = nn.Sequential(BaseBlock(192, 64, 3, 1, activation=activation), BaseBlock(64,  64, 3, 1, activation=activation), deconv(64,  32))
-        self.dec8   = nn.Sequential(BaseBlock(96,  32, 3, 1, activation=activation), BaseBlock(32,  32, 3, 1, activation=activation), deconv(32,  16))
-        self.dec9   = nn.Sequential(BaseBlock(48,  16, 3, 1, activation=activation), BaseBlock(16,  16, 3, 1, activation=activation), deconv(16,  16))
+        self.dec6   = nn.Sequential(BaseNormalBlock(256,128, 3, 1, activation=activation), BaseNormalBlock(128,128, 3, 1, activation=activation), deconv(128, 64))
+        self.dec7   = nn.Sequential(BaseNormalBlock(192, 64, 3, 1, activation=activation), BaseNormalBlock(64,  64, 3, 1, activation=activation), deconv(64,  32))
+        self.dec8   = nn.Sequential(BaseNormalBlock(96,  32, 3, 1, activation=activation), BaseNormalBlock(32,  32, 3, 1, activation=activation), deconv(32,  16))
+        self.dec9   = nn.Sequential(BaseNormalBlock(48,  16, 3, 1, activation=activation), BaseNormalBlock(16,  16, 3, 1, activation=activation), deconv(16,  16))
         self.deconv1 = deconv(16, 16)
         self.final = ConvLayer(16, DIMENSION, 3, 1)
 
